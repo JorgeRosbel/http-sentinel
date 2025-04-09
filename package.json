@@ -1,6 +1,6 @@
 {
   "name": "http-sentinel",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -9,10 +9,25 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup src/index.ts --format esm,cjs --dts"
   },
-  "keywords": [],
+  "keywords": [
+    "http",
+    "errors",
+    "error handling",
+    "http errors",
+    "sentinel",
+    "middleware"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JorgeRosbel/erratic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JorgeRosbel/erratic/issues"
+  },
+  "homepage": "https://github.com/JorgeRosbel/erratic#readme",
   "devDependencies": {
     "eslint": "^9.24.0",
     "prettier": "^3.5.3",
@@ -20,3 +35,4 @@
     "typescript": "^5.8.3"
   }
 }
+
