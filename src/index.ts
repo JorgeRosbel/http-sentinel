@@ -39,11 +39,12 @@ export {
     LoopDetected,
     NotExtended,
     NetworkAuthenticationRequired,
-    ExpectedError
+    ExpectedError,
+    createHttpError
 } from "./errors";
 
   
 export * from "./types"; 
 
 
-export {isErraticError} from "./tools"
+export {isSentinelError,check_error_type,throw_error_by_status_code} from "./tools"

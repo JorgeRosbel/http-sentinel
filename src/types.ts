@@ -40,7 +40,8 @@ export type HttpErrorMessage =
     | "InsufficientStorage"
     | "LoopDetected"
     | "NotExtended"
-    | "NetworkAuthenticationRequired";
+    | "NetworkAuthenticationRequired"
+    | string
 
 
 export type HttpStatusCode =

@@ -1,7 +1,7 @@
 import { type HttpErrorMessage, HttpStatusCode } from "./types";
 
 
-export function createHttpError(defaultMessage: HttpErrorMessage, defaultName: HttpErrorMessage, statusCode: HttpStatusCode) {
+export function createHttpError(defaultMessage: HttpErrorMessage, defaultName: HttpErrorMessage, statusCode?: HttpStatusCode) {
     return class extends Error {
         public readonly status_code = statusCode
 
@@ -95,6 +95,7 @@ export const LoopDetected = createHttpError("LoopDetected", "LoopDetected", 508)
 export const NotExtended = createHttpError("NotExtended", "NotExtended", 510);
 // 511 - Network Authentication Required
 export const NetworkAuthenticationRequired = createHttpError("NetworkAuthenticationRequired", "NetworkAuthenticationRequired", 511);
+
 
 
 export type ExpectedError =

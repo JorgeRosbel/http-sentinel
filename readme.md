@@ -9,6 +9,7 @@ A TypeScript library that provides a comprehensive set of HTTP error classes and
 - Custom error messages support
 - Utility functions for error type checking
 - TypeScript support with full type definitions
+- Factory function for creating custom HTTP errors
 
 ## Installation
 
@@ -21,27 +22,119 @@ npm i http-sentinel
 ### Basic Usage
 
 ```typescript
-import { NotFound, BadRequest } from 'http-error-handler';
+import { NotFound, BadRequest } from 'http-sentinel';
 
 // Throw a 404 error
 throw new NotFound();
 
-// Throw a 400 error with custom message
+// Throw a 400 error
 throw new BadRequest();
 ```
 
 ### Error Type Checking
 
 ```typescript
-import { isErraticError } from 'http-error-handler';
+import { isSentinelError, check_error_type, throw_error_by_status_code } from 'http-sentinel';
 
+// Check if an error is any HTTP error
 try {
   // Your code here
 } catch (error) {
-  if (isErraticError(error)) {
+  if (isSentinelError(error)) {
     console.log(`HTTP Error: ${error.status_code} - ${error.message}`);
   }
 }
+
+// Check if an error is a specific type
+try {
+  // Your code here
+} catch (error) {
+  if (isSentinelError(error) && check_error_type(error, NotFound)) {
+    console.log('Resource not found');
+  }
+}
+
+// Throw an error by status code
+throw_error_by_status_code(404); // Throws a NotFound error
+```
+
+### Creating Custom HTTP Errors
+
+```typescript
+import { createHttpError } from 'http-sentinel';
+
+// Create a custom HTTP error class
+const CustomError = createHttpError("Custom Error", "CustomError", 499);
+
+// Use the custom error
+throw new CustomError();
+```
+
+### React Component Example
+
+```typescript
+import { useState } from 'react';
+import { 
+  isSentinelError, 
+  check_error_type, 
+  throw_error_by_status_code,
+  BadGateway,
+  Unauthorized,
+  TooManyRequests,
+  type ExpectedError 
+} from 'http-sentinel';
+
+function App() {
+  const [error, setError] = useState<ExpectedError | null>(null);
+  
+  try {
+    // Simulate an API call that might fail
+    const status = 429; // Too Many Requests
+    throw_error_by_status_code(status);
+  } catch (err: unknown) {
+    if (isSentinelError(err)) {
+      console.error(`Error: ${err.message}`);
+      console.log(`Status Code: ${err.status_code}`);
+      if (error === null) {
+        setError(err);
+      }
+    }
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Error Details</h2>
+        <ul>
+          <li>
+            {check_error_type(error, BadGateway) 
+              ? "🔌 Server is having connectivity issues" 
+              : "✅ Server connection is stable"}
+          </li>
+          <li>
+            {check_error_type(error, Unauthorized) 
+              ? "🔑 Authentication required" 
+              : "✅ Authentication is valid"}
+          </li>
+          <li>
+            {check_error_type(error, TooManyRequests) 
+              ? "⏳ Please wait before making more requests" 
+              : "✅ Request rate is within limits"}
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <h1>Welcome to the App</h1>
+      <p>Everything is working correctly!</p>
+    </div>
+  );
+}
+
+export default App;
 ```
 
 ## Available Error Classes
@@ -101,11 +194,25 @@ Each error class extends the base `Error` class and includes:
 - `name`: The error name
 - `message`: The error message
 
+### Factory Function
+
+#### `createHttpError(defaultMessage: HttpErrorMessage, defaultName: HttpErrorMessage, statusCode?: HttpStatusCode)`
+
+Creates a new HTTP error class with the specified default message, name, and status code.
+
 ### Utility Functions
 
-#### `isErraticError(error: unknown): error is ExpectedError`
+#### `isSentinelError(error: unknown): error is ExpectedError`
 
 Type guard function to check if an error is an instance of any HTTP error class.
+
+#### `check_error_type(error: ExpectedError, error_class: ReturnType<typeof createHttpError>): boolean`
+
+Checks if the given error is an instance of a specific HTTP error class.
+
+#### `throw_error_by_status_code(status_code: HttpStatusCode): never`
+
+Throws the appropriate HTTP error based on the provided status code. Supports all standard HTTP status codes (4xx and 5xx).
 
 ## TypeScript Support
 
