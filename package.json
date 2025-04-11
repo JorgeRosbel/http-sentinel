@@ -22,12 +22,12 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JorgeRosbel/erratic.git"
+    "url": "git+https://github.com/JorgeRosbel/http-sentinel.git"
   },
   "bugs": {
-    "url": "https://github.com/JorgeRosbel/erratic/issues"
+    "url": "https://github.com/JorgeRosbel/http-sentinel/issues"
   },
-  "homepage": "https://github.com/JorgeRosbel/erratic#readme",
+  "homepage": "https://github.com/JorgeRosbel/http-sentinel#readme",
   "devDependencies": {
     "eslint": "^9.24.0",
     "prettier": "^3.5.3",
