@@ -2,12 +2,23 @@
   "name": "http-sentinel",
   "version": "1.0.9",
   "description": "",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsup src/index.ts --format esm,cjs --dts"
+    "build": "tsup",
+    "lint": "eslint . --ext .ts,.js",
+    "husky:init": "husky",
+    "format": "prettier --write \"**/*.{js,ts}\"",
+    "check": "prettier --check \"**/*.{js,ts}\""
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint",
+      "prettier --write"
+    ]
+  },
+  "lint-staged:options": {
+    "allowEmpty": true
   },
   "keywords": [
     "http",
@@ -17,9 +28,9 @@
     "sentinel",
     "middleware"
   ],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "author": "Jorge Rosbel",
+  "license": "MIT",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JorgeRosbel/http-sentinel.git"
@@ -29,9 +40,15 @@
   },
   "homepage": "https://github.com/JorgeRosbel/http-sentinel#readme",
   "devDependencies": {
+    "@esbuild-plugins/tsconfig-paths": "^0.1.2",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "eslint": "^9.24.0",
-    "prettier": "^3.5.3",
-    "tsup": "^8.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
 }

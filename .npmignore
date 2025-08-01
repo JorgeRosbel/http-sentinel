@@ -1,2 +1,53 @@
-.github/*
-/src
+# Source files (solo dist/ se publica)
+src/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Development files
+.github/
+scripts/
+docs/
+rollup.config.js
+jest.config.js
+.eslintrc.js
+.prettierrc
+.husky/
+
+# Environment & configs
+.env*
+.nvmrc
+tsconfig.json
+.vscode/
+.idea/
+
+# Logs & coverage
+*.log
+coverage/
+.nyc_output/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts que NO queremos
+*.tgz
+*.tar.gz
+
+*.config.js
+*.config.json
+*.config.ts
+*.config.mjs
+*.config.cjs
+*.json
+
+ts.config.json
+.prettierignore
