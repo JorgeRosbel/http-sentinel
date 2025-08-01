@@ -6,8 +6,8 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     coverage: {
-      provider: 'v8', // usa @vitest/coverage-v8
-      reporter: ['text', 'lcov'], // opcional: el formato de reporte
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
     },
   },
   resolve: {
