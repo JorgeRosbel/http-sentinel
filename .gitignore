@@ -21,3 +21,4 @@ yarn-error.log*
 # archivos de TypeScript que no necesitas
 *.tsbuildinfo
 .npmrc
+coverage/

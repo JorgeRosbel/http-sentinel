@@ -5,6 +5,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    coverage: {
+      provider: 'v8', // usa @vitest/coverage-v8
+      reporter: ['text', 'lcov'], // opcional: el formato de reporte
+    },
   },
   resolve: {
     alias: {
