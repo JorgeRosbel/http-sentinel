@@ -1,4 +1,4 @@
-import { type HttpErrorMessage, HttpStatusCode } from './types';
+import { type HttpErrorMessage, HttpStatusCode } from '@/types';
 
 export function createHttpError(
   defaultMessage: HttpErrorMessage,
@@ -15,6 +15,8 @@ export function createHttpError(
     }
   };
 }
+
+export const UnknownError = createHttpError('UnknownError', 'UnknownError', 0);
 
 // Creación de las clases de error HTTP usando la fábrica
 // 400 - Bad Request
@@ -183,4 +185,5 @@ export type ExpectedError =
   | InstanceType<typeof InsufficientStorage>
   | InstanceType<typeof LoopDetected>
   | InstanceType<typeof NotExtended>
-  | InstanceType<typeof NetworkAuthenticationRequired>;
+  | InstanceType<typeof NetworkAuthenticationRequired>
+  | InstanceType<typeof UnknownError>;

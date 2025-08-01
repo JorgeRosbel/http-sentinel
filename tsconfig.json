@@ -11,12 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/types": ["src/types"],
-      "@/utils": ["src/utils"],
-      "@/providers": ["src/providers"],
-      "@/commands": ["src/commands"],
-      "@/templates": ["src/templates"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"],

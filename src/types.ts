@@ -39,7 +39,8 @@ export type HttpErrorMessage =
   | 'LoopDetected'
   | 'NotExtended'
   | 'NetworkAuthenticationRequired'
-  | string;
+  | 'UnknownError'
+  | (string & {});
 
 export type HttpStatusCode =
   | 400
@@ -81,4 +82,5 @@ export type HttpStatusCode =
   | 507
   | 508
   | 510
-  | 511;
+  | 511
+  | 0;

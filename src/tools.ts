@@ -41,9 +41,11 @@ import {
   NetworkAuthenticationRequired,
   ExpectedError,
   createHttpError,
-} from './errors';
+  UnknownError,
+} from '@/errors';
 
 const allErrors = [
+  UnknownError,
   BadRequest,
   Unauthorized,
   PaymentRequired,
@@ -87,7 +89,7 @@ const allErrors = [
   createHttpError,
 ];
 
-import { HttpStatusCode } from './types';
+import { type HttpStatusCode } from '@/types';
 
 /**
  * Checks if the given error is an instance of any of the HTTP error classes defined in the library.
@@ -95,7 +97,7 @@ import { HttpStatusCode } from './types';
  * @param error - The error to check.
  * @returns A boolean indicating whether the error is an instance of an HTTP error class.
  */
-export const isSentinelError = (error: unknown): error is ExpectedError => {
+export const matches = (error: unknown): error is ExpectedError => {
   return allErrors.some(ErrClass => error instanceof ErrClass);
 };
 
@@ -107,12 +109,10 @@ export const isSentinelError = (error: unknown): error is ExpectedError => {
  * @returns A boolean indicating whether the error is an instance of the specified HTTP error class.
  */
 
-export const check_error_type = (
-  error: ExpectedError,
-  error_class: ReturnType<typeof createHttpError>
-) => error instanceof error_class;
+export const compare = (error: ExpectedError, error_class: ReturnType<typeof createHttpError>) =>
+  error instanceof error_class;
 
-export const throw_error_by_status_code = (status_code: HttpStatusCode) => {
+export const resolveHttpError = (status_code: HttpStatusCode) => {
   switch (status_code) {
     case 400:
       throw new BadRequest();
