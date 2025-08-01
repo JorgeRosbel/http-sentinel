@@ -227,13 +227,3 @@ function Core() {
 }
 
 export const stn = Core();
-
-try {
-  stn.throw.Unauthorized();
-} catch (e) {
-  if (stn.tools.matches(e)) {
-    stn.tools.compare(e, stn.collections.Unauthorized);
-  } else {
-    console.error('An unknown error occurred in the core module:', e);
-  }
-}
