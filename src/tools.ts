@@ -195,6 +195,6 @@ export const resolveHttpError = (status_code: HttpStatusCode) => {
     case 511:
       throw new NetworkAuthenticationRequired();
     default:
-      throw new Error(`Unknown status code: ${status_code}`);
+      throw new UnknownError();
   }
 };
