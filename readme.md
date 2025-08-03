@@ -116,7 +116,7 @@ The library provides TypeScript type definitions for improved DX and type safety
 
 ---
 
-## 1. Main Namespace: Core()
+## 1. Main Namespace: stn
 
 Returns an object with four main groups: **throw**, **collections**, **tools**, and **create**.
 
@@ -161,8 +161,11 @@ Returns an object with four main groups: **throw**, **collections**, **tools**, 
 ### 2.1. Resolve and throw by code
 
 ```ts
+import { stn } from "http-sentinel"
+
+const status = 403
 try {
-  stn.tools.resolveHttpError(403);
+  stn.tools.resolveHttpError(status);
 } catch (e) {
   if (stn.tools.matches(e)) {
     // uniform handling
@@ -173,6 +176,8 @@ try {
 ### 2.2. Compare caught errors
 
 ```ts
+import { stn } from "http-sentinel"
+
 try {
   stn.throw.NotFound('User not found');
 } catch (err) {
@@ -185,6 +190,8 @@ try {
 ### 2.3. Define a custom error
 
 ```ts
+import { stn } from "http-sentinel"
+
 const MyError = stn.create.customError('MyError', 'Something strange happened');
 throw new MyError('Custom thrown');
 ```
