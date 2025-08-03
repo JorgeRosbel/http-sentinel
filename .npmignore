@@ -27,10 +27,12 @@ tsconfig.json
 coverage/
 .nyc_output/
 
-# Dependencies
-node_modules/
 
-# OS files
+node_modules/
+docs/
+examples/
+
+
 .DS_Store
 Thumbs.db
 
@@ -38,7 +40,7 @@ Thumbs.db
 .git/
 .gitignore
 
-# Build artifacts que NO queremos
+
 *.tgz
 *.tar.gz
 

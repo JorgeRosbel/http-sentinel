@@ -1,24 +1,23 @@
-# node modules
 node_modules/
 
-# salidas de compilación (si usás tsc)
+
 dist/
 build/
 
-# archivos temporales del sistema
+
 .DS_Store
 Thumbs.db
 
-# logs
+
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# configuración de entorno (si existiera)
+
 .env
 
-# archivos de TypeScript que no necesitas
+
 *.tsbuildinfo
 .npmrc
 coverage/
