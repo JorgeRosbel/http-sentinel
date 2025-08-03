@@ -2,14 +2,37 @@
 
 A TypeScript library that provides a comprehensive set of HTTP error classes and utilities for handling HTTP errors in your applications.
 
+## Table of Contents
+
+* [Features](#features)
+* [Installation](#installation)
+* [Available Error Classes](#available-error-classes)
+
+  * [4xx Client Errors](#4xx-client-errors)
+  * [5xx Server Errors](#5xx-server-errors)
+* [API Reference: Core (http-sentinel)](#api-reference-core-http-sentinel)
+
+  * [Purpose](#purpose)
+  * [TypeScript Support](#typescript-support)
+  * [1. Main Namespace: Core()](#1-main-namespace-core)
+
+    * [1.1. throw (shortcut to throw HTTP errors)](#11-throw-shortcut-to-throw-http-errors)
+    * [1.2. collections](#12-collections)
+    * [1.3. tools](#13-tools)
+    * [1.4. create](#14-create)
+  * [2. Common Examples](#2-common-examples)
+  * [3. Notes](#3-notes)
+
+---
+
 ## Features
 
-- Complete set of HTTP error classes (4xx and 5xx status codes)
-- Type-safe error handling
-- Custom error messages support
-- Utility functions for error type checking
-- TypeScript support with full type definitions
-- Factory function for creating custom HTTP errors
+* Complete set of HTTP error classes (4xx and 5xx status codes)
+* Type-safe error handling
+* Custom error messages support
+* Utility functions for error type checking
+* TypeScript support with full type definitions
+* Factory function for creating custom HTTP errors
 
 ## Installation
 
@@ -17,215 +40,161 @@ A TypeScript library that provides a comprehensive set of HTTP error classes and
 npm i http-sentinel
 ```
 
-## Usage
-
-### Basic Usage
-
-```typescript
-import { NotFound, BadRequest } from 'http-sentinel';
-
-// Throw a 404 error
-throw new NotFound();
-
-// Throw a 400 error
-throw new BadRequest();
-```
-
-### Error Type Checking
-
-```typescript
-import { isSentinelError, check_error_type, throw_error_by_status_code } from 'http-sentinel';
-
-// Check if an error is any HTTP error
-try {
-  // Your code here
-} catch (error) {
-  if (isSentinelError(error)) {
-    console.log(`HTTP Error: ${error.status_code} - ${error.message}`);
-  }
-}
-
-// Check if an error is a specific type
-try {
-  // Your code here
-} catch (error) {
-  if (isSentinelError(error) && check_error_type(error, NotFound)) {
-    console.log('Resource not found');
-  }
-}
-
-// Throw an error by status code
-throw_error_by_status_code(404); // Throws a NotFound error
-```
-
-### Creating Custom HTTP Errors
-
-```typescript
-import { createHttpError } from 'http-sentinel';
-
-// Create a custom HTTP error class
-const CustomError = createHttpError("Custom Error", "CustomError", 499);
-
-// Use the custom error
-throw new CustomError();
-```
-
-### React Component Example
-
-```typescript
-import { useState } from 'react';
-import { 
-  isSentinelError, 
-  check_error_type, 
-  throw_error_by_status_code,
-  BadGateway,
-  Unauthorized,
-  TooManyRequests,
-  type ExpectedError 
-} from 'http-sentinel';
-
-function App() {
-  const [error, setError] = useState<ExpectedError | null>(null);
-  
-  try {
-    // Simulate an API call that might fail
-    const status = 429; // Too Many Requests
-    throw_error_by_status_code(status);
-  } catch (err: unknown) {
-    if (isSentinelError(err)) {
-      console.error(`Error: ${err.message}`);
-      console.log(`Status Code: ${err.status_code}`);
-      if (error === null) {
-        setError(err);
-      }
-    }
-  }
-
-  if (error) {
-    return (
-      <div className="error-container">
-        <h2>Error Details</h2>
-        <ul>
-          <li>
-            {check_error_type(error, BadGateway) 
-              ? "🔌 Server is having connectivity issues" 
-              : "✅ Server connection is stable"}
-          </li>
-          <li>
-            {check_error_type(error, Unauthorized) 
-              ? "🔑 Authentication required" 
-              : "✅ Authentication is valid"}
-          </li>
-          <li>
-            {check_error_type(error, TooManyRequests) 
-              ? "⏳ Please wait before making more requests" 
-              : "✅ Request rate is within limits"}
-          </li>
-        </ul>
-      </div>
-    );
-  }
-
-  return (
-    <div className="app">
-      <h1>Welcome to the App</h1>
-      <p>Everything is working correctly!</p>
-    </div>
-  );
-}
-
-export default App;
-```
-
 ## Available Error Classes
 
 ### 4xx Client Errors
 
-- `BadRequest` (400)
-- `Unauthorized` (401)
-- `PaymentRequired` (402)
-- `Forbidden` (403)
-- `NotFound` (404)
-- `MethodNotAllowed` (405)
-- `NotAcceptable` (406)
-- `ProxyAuthenticationRequired` (407)
-- `RequestTimeout` (408)
-- `Conflict` (409)
-- `Gone` (410)
-- `LengthRequired` (411)
-- `PreconditionFailed` (412)
-- `PayloadTooLarge` (413)
-- `URITooLong` (414)
-- `UnsupportedMediaType` (415)
-- `RangeNotSatisfiable` (416)
-- `ExpectationFailed` (417)
-- `ImATeapot` (418)
-- `MisdirectedRequest` (421)
-- `UnprocessableEntity` (422)
-- `Locked` (423)
-- `FailedDependency` (424)
-- `TooEarly` (425)
-- `UpgradeRequired` (426)
-- `PreconditionRequired` (428)
-- `TooManyRequests` (429)
-- `RequestHeaderFieldsTooLarge` (431)
-- `UnavailableForLegalReasons` (451)
+* `BadRequest` (400)
+* `Unauthorized` (401)
+* `PaymentRequired` (402)
+* `Forbidden` (403)
+* `NotFound` (404)
+* `MethodNotAllowed` (405)
+* `NotAcceptable` (406)
+* `ProxyAuthenticationRequired` (407)
+* `RequestTimeout` (408)
+* `Conflict` (409)
+* `Gone` (410)
+* `LengthRequired` (411)
+* `PreconditionFailed` (412)
+* `PayloadTooLarge` (413)
+* `URITooLong` (414)
+* `UnsupportedMediaType` (415)
+* `RangeNotSatisfiable` (416)
+* `ExpectationFailed` (417)
+* `ImATeapot` (418)
+* `MisdirectedRequest` (421)
+* `UnprocessableEntity` (422)
+* `Locked` (423)
+* `FailedDependency` (424)
+* `TooEarly` (425)
+* `UpgradeRequired` (426)
+* `PreconditionRequired` (428)
+* `TooManyRequests` (429)
+* `RequestHeaderFieldsTooLarge` (431)
+* `UnavailableForLegalReasons` (451)
 
 ### 5xx Server Errors
 
-- `InternalServer` (500)
-- `NotImplemented` (501)
-- `BadGateway` (502)
-- `ServiceUnavailable` (503)
-- `GatewayTimeout` (504)
-- `HTTPVersionNotSupported` (505)
-- `VariantAlsoNegotiates` (506)
-- `InsufficientStorage` (507)
-- `LoopDetected` (508)
-- `NotExtended` (510)
-- `NetworkAuthenticationRequired` (511)
+* `InternalServer` (500)
+* `NotImplemented` (501)
+* `BadGateway` (502)
+* `ServiceUnavailable` (503)
+* `GatewayTimeout` (504)
+* `HTTPVersionNotSupported` (505)
+* `VariantAlsoNegotiates` (506)
+* `InsufficientStorage` (507)
+* `LoopDetected` (508)
+* `NotExtended` (510)
+* `NetworkAuthenticationRequired` (511)
 
-## API Reference
+---
 
-### Error Classes
+# API Reference: Core (http-sentinel)
 
-Each error class extends the base `Error` class and includes:
-- `status_code`: The HTTP status code
-- `name`: The error name
-- `message`: The error message
+This reference describes the components exposed by `Core()` in English, in tabular format, with usage examples.
 
-### Factory Function
+## Purpose
 
-#### `createHttpError(defaultMessage: HttpErrorMessage, defaultName: HttpErrorMessage, statusCode?: HttpStatusCode)`
+Provide a quick guide to develop and handle custom HTTP errors using the object returned by `Core()`.
 
-Creates a new HTTP error class with the specified default message, name, and status code.
-
-### Utility Functions
-
-#### `isSentinelError(error: unknown): error is ExpectedError`
-
-Type guard function to check if an error is an instance of any HTTP error class.
-
-#### `check_error_type(error: ExpectedError, error_class: ReturnType<typeof createHttpError>): boolean`
-
-Checks if the given error is an instance of a specific HTTP error class.
-
-#### `throw_error_by_status_code(status_code: HttpStatusCode): never`
-
-Throws the appropriate HTTP error based on the provided status code. Supports all standard HTTP status codes (4xx and 5xx).
+---
 
 ## TypeScript Support
 
-The library includes TypeScript definitions for all error classes and utility functions. It exports the following types:
+The library provides TypeScript type definitions for improved DX and type safety:
 
-- `HttpErrorMessage`: Union type of all possible HTTP error message names
-- `HttpStatusCode`: Union type of all possible HTTP status codes
-- `ExpectedError`: Union type of all possible HTTP error instances
+* **`HttpStatusCode`**: a union type of valid HTTP status codes (e.g., `400 | 401 | 404 | 500 | ...`).
+* **`HttpErrorMessage`**: can be either a plain string or a predefined set of messages provided by http-sentinel.
 
-## Contributing
+  * Predefined messages cover common HTTP error scenarios.
+  * Allows any other string as a custom message.
+* **`ExpectedError`**: a union type of all standard error class instances provided by http-sentinel.
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+  * Represents the complete set of recognized error instances.
+  * Useful for narrowing `catch` blocks and ensuring type safety when handling known errors.
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 1. Main Namespace: Core()
+
+Returns an object with four main groups: **throw**, **collections**, **tools**, and **create**.
+
+### 1.1. throw (shortcut to throw HTTP errors)
+
+| Error Name     | Optional Parameter           | What it does                          | Example                                      |
+| -------------- | ---------------------------- | ------------------------------------- | -------------------------------------------- |
+| `BadRequest`   | `message?: HttpErrorMessage` | Throws a 400 error.                   | `stn.throw.BadRequest('Missing parameters')` |
+| ...            | ...                          | ...                                   | ...                                          |
+| `UnknownError` | `message?: HttpErrorMessage` | Throws a generic uncategorized error. | `stn.throw.UnknownError()`                   |
+
+---
+
+### 1.2. collections
+
+| Property                                          | Description                  | Example Usage                                            |
+| ------------------------------------------------- | ---------------------------- | -------------------------------------------------------- |
+| `BadRequest`, `Unauthorized`, ..., `UnknownError` | Specific HTTP error classes. | `if (error instanceof stn.collections.NotFound) { ... }` |
+
+---
+
+### 1.3. tools
+
+| Function           | Parameters                                         | Returns   | Description                                                         | Example                                              |
+| ------------------ | -------------------------------------------------- | --------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
+| `resolveHttpError` | `statusCode: number`                               | Throws    | Maps an HTTP numeric code to its corresponding error and throws it. | `stn.tools.resolveHttpError(404)`                    |
+| `compare`          | `caughtError: unknown`, `target: ErrorConstructor` | `boolean` | Checks if the caught error matches a specific HTTP error class.     | `stn.tools.compare(err, stn.collections.BadRequest)` |
+| `matches`          | `err: unknown`                                     | `boolean` | Detects if the error was created by http-sentinel's base structure. | `if (stn.tools.matches(err)) { /* handle */ }`       |
+
+---
+
+### 1.4. create
+
+| Property      | Description                                                                                            | Example                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `customError` | Creates a custom or extended HTTP error based on http-sentinel's foundations. Status code is optional. | `stn.create.customError('MyError', 'customMessage')` or `stn.create.customError('MyError', 'customMessage', 422)` |
+
+---
+
+## 2. Common Examples
+
+### 2.1. Resolve and throw by code
+
+```ts
+try {
+  stn.tools.resolveHttpError(403);
+} catch (e) {
+  if (stn.tools.matches(e)) {
+    // uniform handling
+  }
+}
+```
+
+### 2.2. Compare caught errors
+
+```ts
+try {
+  stn.throw.NotFound('User not found');
+} catch (err) {
+  if (stn.tools.compare(err, stn.collections.NotFound)) {
+    console.log('It is an explicit 404');
+  }
+}
+```
+
+### 2.3. Define a custom error
+
+```ts
+const MyError = stn.create.customError('MyError', 'Something strange happened');
+throw new MyError('Custom thrown');
+```
+
+---
+
+## 3. Notes
+
+* Functions in `throw` **always** throw the error; they do not return a value. If you need to handle it without breaking the flow, wrap it in `try/catch`.
+* `collections` provides the class references for `instanceof` checks and for passing to `compare`.
+* `matches` is useful to filter out errors that are not part of the http-sentinel ecosystem and avoid false positives.
+* `customError` allows extension with additional metadata for traceability. The status code argument is optional.
+* TypeScript's `HttpStatusCode`, `HttpErrorMessage`, and `ExpectedError` types provide strong typing for status codes, messages, and known error instances.
