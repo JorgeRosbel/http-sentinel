@@ -2,6 +2,8 @@
 
 A TypeScript library that provides a comprehensive set of HTTP error classes and utilities for handling HTTP errors in your applications.
 
+![banner](./banner/carbon.png)
+
 ## Table of Contents
 
 * [Features](#features)
