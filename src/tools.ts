@@ -198,3 +198,217 @@ export const resolveHttpError = (status_code: HttpStatusCode) => {
       throw new UnknownError();
   }
 };
+
+interface RequestError {
+  message: string;
+  name: string;
+  statusCode?: HttpStatusCode;
+}
+
+interface Response<U> {
+  error: RequestError | null;
+  data: U | null;
+  success: boolean;
+}
+
+export const coreRequest = () => {
+  let error: RequestError | null = null;
+  let success: boolean = false;
+  let status: HttpStatusCode | null = null;
+
+  return {
+    get: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    post: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    put: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    patch: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    delete: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'DELETE',
+          headers: {
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    head: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'HEAD',
+          headers: {
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+
+    options: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+      let data: U | null = null;
+      try {
+        const response = await fetch(url, {
+          ...options,
+          method: 'OPTIONS',
+          headers: {
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        success = response.ok;
+        status = response.status as HttpStatusCode;
+
+        if (!success) {
+          resolveHttpError(status);
+        }
+
+        data = await response.json();
+      } catch (err) {
+        if (matches(err)) {
+          error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      }
+      return { success, data, error };
+    },
+  };
+};
+
+export const request = coreRequest();
