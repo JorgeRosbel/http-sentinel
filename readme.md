@@ -207,3 +207,73 @@ throw new MyError('Custom thrown');
 * `matches` is useful to filter out errors that are not part of the http-sentinel ecosystem and avoid false positives.
 * `customError` allows extension with additional metadata for traceability. The status code argument is optional.
 * TypeScript's `HttpStatusCode`, `HttpErrorMessage`, and `ExpectedError` types provide strong typing for status codes, messages, and known error instances.
+
+
+## 4. Request
+
+This library also includes a function to make HTTP requests to an API, automatically integrating error handling via http-sentinel utilities. It provides a simple and fast way to fetch data and manage any failures. It uses the same signature (parameters and options) as the native `fetch` function.
+
+
+```ts
+import { request } from "http-sentinel";
+
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
+// GET
+const { success, data, error } = await request.get<User>("/api/users/1");
+
+if (success && data) {
+  console.log(data.name);       // Typed as User
+  console.log(data.role);       
+} else {
+  // Manejo de errores estandarizado
+  console.error("Error:", error?.message);
+  console.error("Tipo:", error?.name);
+  console.error("Código HTTP:", error?.statusCode);
+}
+
+```
+
+Here’s an example of a `POST` request using the same `http-sentinel` API:
+
+```ts
+import { request } from "http-sentinel";
+
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
+interface CreateUserPayload {
+  name: string;
+  role: string;
+}
+
+const newUser: CreateUserPayload = {
+  name: "Alice",
+  role: "admin",
+};
+
+// POST request
+const { success, data, error } = await request.post<User>("/api/users", {
+  // you can also pass headers here if needed
+  body: JSON.stringify(newUser),
+});
+
+if (success && data) {
+  console.log("Created user ID:", data.id);  // Typed as User
+  console.log("Name:", data.name);
+  console.log("Role:", data.role);
+} else {
+  // Standardized error handling
+  console.error("Error:", error?.message);
+  console.error("Type:", error?.name);
+  console.error("HTTP Status Code:", error?.statusCode);
+}
+
+```

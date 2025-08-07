@@ -89,7 +89,7 @@ const allErrors = [
   createHttpError,
 ];
 
-import { type HttpStatusCode } from '@/types';
+import type { RequestError, HttpStatusCode, Response } from '@/types';
 
 /**
  * Checks if the given error is an instance of any of the HTTP error classes defined in the library.
@@ -198,18 +198,6 @@ export const resolveHttpError = (status_code: HttpStatusCode) => {
       throw new UnknownError();
   }
 };
-
-interface RequestError {
-  message: string;
-  name: string;
-  statusCode?: HttpStatusCode;
-}
-
-interface Response<U> {
-  error: RequestError | null;
-  data: U | null;
-  success: boolean;
-}
 
 export const coreRequest = () => {
   let error: RequestError | null = null;
