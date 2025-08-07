@@ -277,3 +277,10 @@ if (success && data) {
 }
 
 ```
+
+## Test Coverage
+
+To run your tests in CI mode and generate a coverage report, use:
+
+```bash
+npm run test:ci
