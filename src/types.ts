@@ -84,3 +84,15 @@ export type HttpStatusCode =
   | 510
   | 511
   | 0;
+
+export interface RequestError {
+  message: string;
+  name: string;
+  statusCode?: HttpStatusCode;
+}
+
+export interface Response<U> {
+  error: RequestError | null;
+  data: U | null;
+  success: boolean;
+}
