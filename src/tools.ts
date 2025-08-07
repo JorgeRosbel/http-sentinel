@@ -200,13 +200,12 @@ export const resolveHttpError = (status_code: HttpStatusCode) => {
 };
 
 export const coreRequest = () => {
-  let error: RequestError | null = null;
-  let success: boolean = false;
-  let status: HttpStatusCode | null = null;
-
   return {
     get: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
@@ -234,13 +233,16 @@ export const coreRequest = () => {
 
     post: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
+
       try {
         const response = await fetch(url, {
           ...options,
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
@@ -262,13 +264,15 @@ export const coreRequest = () => {
 
     put: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
@@ -290,6 +294,9 @@ export const coreRequest = () => {
 
     patch: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
@@ -318,6 +325,9 @@ export const coreRequest = () => {
 
     delete: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
@@ -345,6 +355,9 @@ export const coreRequest = () => {
 
     head: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
@@ -372,6 +385,9 @@ export const coreRequest = () => {
 
     options: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
       let data: U | null = null;
+      let error: RequestError | null = null;
+      let success: boolean = false;
+      let status: HttpStatusCode | null = null;
       try {
         const response = await fetch(url, {
           ...options,
