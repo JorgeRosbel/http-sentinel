@@ -91,8 +91,24 @@ export interface RequestError {
   statusCode?: HttpStatusCode;
 }
 
-export interface Response<U> {
+export interface ApiResponse<U> {
   error: RequestError | null;
   data: U | null;
   success: boolean;
+}
+
+export interface RequestModel {
+  url: RequestInfo | URL;
+  options?: RequestInit;
+  timeout?: number;
+}
+
+export interface RequestMethods {
+  get: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  post: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  put: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  patch: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  delete: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  options: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
+  head: <U>(params: RequestModel) => Promise<ApiResponse<U>>;
 }

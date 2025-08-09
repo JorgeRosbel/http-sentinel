@@ -2,7 +2,7 @@
 
 A TypeScript library that provides a comprehensive set of HTTP error classes and utilities for handling HTTP errors in your applications.
 
-![banner](./banner/carbon.png)
+![banner](https://github.com/JorgeRosbel/http-sentinel/raw/main/banner/carbon.png)
 
 ## Table of Contents
 
@@ -224,7 +224,10 @@ interface User {
 }
 
 // GET
-const { success, data, error } = await request.get<User>("/api/users/1");
+const { success, data, error } = await request.get<User>({
+  url: "/api/users/1",
+  timeout: 5000
+});
 
 if (success && data) {
   console.log(data.name);       // Typed as User
@@ -259,11 +262,15 @@ const newUser: CreateUserPayload = {
   role: "admin",
 };
 
+
 // POST request
-const { success, data, error } = await request.post<User>("/api/users", {
-  // you can also pass headers here if needed
-  body: JSON.stringify(newUser),
-});
+const { success, data, error } = await request.post<User>(
+  {
+    url: "/api/users",
+    options: { body: JSON.stringify(newUser) },
+    timeout: 5000
+  }
+);
 
 if (success && data) {
   console.log("Created user ID:", data.id);  // Typed as User
