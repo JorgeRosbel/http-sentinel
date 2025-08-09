@@ -77,6 +77,7 @@ export const UnprocessableEntity = createHttpError(
   'UnprocessableEntity',
   422
 );
+
 // 423 - Locked
 export const Locked = createHttpError('Locked', 'Locked', 423);
 // 424 - Failed Dependency
@@ -145,7 +146,10 @@ export const NetworkAuthenticationRequired = createHttpError(
   511
 );
 
+export const AbortError = createHttpError('Request was aborted by the client', 'AbortError');
+
 export type ExpectedError =
+  | InstanceType<typeof AbortError>
   | InstanceType<typeof BadRequest>
   | InstanceType<typeof Unauthorized>
   | InstanceType<typeof PaymentRequired>

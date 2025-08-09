@@ -9,3 +9,4 @@ docs/
 *.md
 .env
 .gitattributes
+coverage/

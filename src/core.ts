@@ -43,6 +43,7 @@ import {
   NetworkAuthenticationRequired,
   BadRequest,
   createHttpError as customError,
+  AbortError,
 } from '@/errors';
 
 import { resolveHttpError, compare, matches } from '@/tools';
@@ -216,6 +217,7 @@ function Core() {
     LoopDetected,
     NotExtended,
     NetworkAuthenticationRequired,
+    AbortError,
   };
 
   return {

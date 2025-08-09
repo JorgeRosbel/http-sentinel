@@ -42,9 +42,11 @@ import {
   ExpectedError,
   createHttpError,
   UnknownError,
+  AbortError,
 } from '@/errors';
 
 const allErrors = [
+  AbortError,
   UnknownError,
   BadRequest,
   Unauthorized,
@@ -89,7 +91,13 @@ const allErrors = [
   createHttpError,
 ];
 
-import type { RequestError, HttpStatusCode, Response } from '@/types';
+import type {
+  RequestError,
+  HttpStatusCode,
+  ApiResponse,
+  RequestModel,
+  RequestMethods,
+} from '@/types';
 
 /**
  * Checks if the given error is an instance of any of the HTTP error classes defined in the library.
@@ -199,22 +207,40 @@ export const resolveHttpError = (status_code: HttpStatusCode) => {
   }
 };
 
-export const coreRequest = () => {
+export const coreRequest = (): RequestMethods => {
   return {
-    get: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    get: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+      let timeoutID = null;
+      const controller = new AbortController();
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'GET',
           headers: {
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -222,30 +248,56 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : ((await response.text()) as U);
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
         }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
       }
+
       return { success, data, error };
     },
 
-    post: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    post: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
 
+      const controller = new AbortController();
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -253,29 +305,58 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
         }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
       }
+
       return { success, data, error };
     },
 
-    put: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    put: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+
+      const controller = new AbortController();
+
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -283,30 +364,57 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
         }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
       }
+
       return { success, data, error };
     },
 
-    patch: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    patch: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+
+      const controller = new AbortController();
+
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -314,29 +422,57 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
         }
       }
       return { success, data, error };
     },
 
-    delete: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    delete: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+
+      const controller = new AbortController();
+
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'DELETE',
           headers: {
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -344,29 +480,56 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
+        }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
         }
       }
       return { success, data, error };
     },
 
-    head: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    head: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+
+      const controller = new AbortController();
+
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'HEAD',
           headers: {
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -374,29 +537,58 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
         }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
       }
+
       return { success, data, error };
     },
 
-    options: async <U>(url: RequestInfo | URL, options?: RequestInit): Promise<Response<U>> => {
+    options: async <U>({ url, options, timeout }: RequestModel): Promise<ApiResponse<U>> => {
       let data: U | null = null;
       let error: RequestError | null = null;
       let success: boolean = false;
       let status: HttpStatusCode | null = null;
+
+      const controller = new AbortController();
+
+      let timeoutID = null;
+
       try {
-        const response = await fetch(url, {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          if (timeout) {
+            timeoutID = setTimeout(() => {
+              controller.abort();
+              const err = new AbortError();
+              reject(err);
+            }, timeout);
+          }
+        });
+
+        const fetchPromise = fetch(url, {
           ...options,
+          signal: controller.signal,
           method: 'OPTIONS',
           headers: {
-            Accept: 'application/json',
             ...options?.headers,
           },
         });
+
+        const response = timeout
+          ? await Promise.race([fetchPromise, timeoutPromise])
+          : await fetchPromise;
+
         success = response.ok;
         status = response.status as HttpStatusCode;
 
@@ -404,15 +596,50 @@ export const coreRequest = () => {
           resolveHttpError(status);
         }
 
-        data = await response.json();
+        const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+
+        data = contentType?.includes('application/json')
+          ? await response.json()
+          : await response.text();
       } catch (err) {
         if (matches(err)) {
           error = { message: err.message, name: err.name, statusCode: err.status_code };
         }
+      } finally {
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
       }
+
       return { success, data, error };
     },
   };
 };
 
 export const request = coreRequest();
+
+export interface Pokemon {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  types: {
+    slot: number;
+    type: {
+      name: string; // tipo de Pokémon (ejemplo: "electric", "fire", etc.)
+      url: string;
+    };
+  }[];
+  sprites: {
+    front_default: string | null; // URL imagen frontal
+    [key: string]: string | null; // otras posibles imágenes
+  };
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string; // ejemplo: "speed", "attack"
+      url: string;
+    };
+  }[];
+}

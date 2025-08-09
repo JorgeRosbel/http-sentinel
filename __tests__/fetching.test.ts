@@ -27,12 +27,19 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
-    const { success, data, error } = await request.get<Test>('https://api.example.com/data');
+    const { success, data, error } = await request.get<Test>({
+      url: 'https://api.example.com/data',
+    });
 
-    expect(getSpy).toHaveBeenCalledWith('https://api.example.com/data');
+    expect(getSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -50,7 +57,9 @@ describe('Fetching Tests', () => {
 
     const errorPayload = { message: expe_error, statusCode: expe_status, name: expe_error };
 
-    const { success, data, error } = await request.get<Test>('https://api.example.com/data');
+    const { success, data, error } = await request.get<Test>({
+      url: 'https://api.example.com/data',
+    });
 
     expect(success).toEqual(false);
     expect(data).toEqual(null);
@@ -69,7 +78,9 @@ describe('Fetching Tests', () => {
 
     const errorPayload = { message: expe_error, statusCode: expe_status, name: expe_error };
 
-    const { success, data, error } = await request.get<Test>('https://api.example.com/data');
+    const { success, data, error } = await request.get<Test>({
+      url: 'https://api.example.com/data',
+    });
 
     expect(success).toEqual(false);
     expect(data).toEqual(null);
@@ -81,6 +92,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -88,35 +102,15 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.post<Test>(
-      'https://api.example.com/data',
-      options
-    );
-
-    expect(postSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
-    expect(success).toEqual(true);
-    expect(data).toEqual(fetchResponse);
-    expect(error).toBeNull();
-  });
-
-  it('should fetch data correctly: POST', async () => {
-    const fetchResponse: Test = { name: 'bar', value: 1 };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: async () => Promise.resolve(fetchResponse),
+    const { success, data, error } = await request.post<Test>({
+      url: 'https://api.example.com/data',
+      options,
     });
 
-    const options = {
-      body: JSON.stringify({ id: 1, name: 'foo' }),
-    };
-
-    const { success, data, error } = await request.post<Test>(
-      'https://api.example.com/data',
-      options
-    );
-
-    expect(postSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(postSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -141,10 +135,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.post<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.post<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -158,7 +152,10 @@ describe('Fetching Tests', () => {
       })
     );
 
-    expect(postSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(postSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(false);
     expect(data).toEqual(null);
     expect(error).toEqual(errorPayload);
@@ -180,7 +177,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    await request.post<Test>('https://api.example.com/data', options);
+    await request.post<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -200,6 +200,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -210,10 +213,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.put<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.put<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -226,7 +229,10 @@ describe('Fetching Tests', () => {
         body: expect.stringContaining(JSON.stringify({ id: 1, name: 'foo' })),
       })
     );
-    expect(putSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(putSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -237,6 +243,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -247,10 +256,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.delete<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.delete<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -263,7 +272,10 @@ describe('Fetching Tests', () => {
         body: expect.stringContaining(JSON.stringify({ id: 1, name: 'foo' })),
       })
     );
-    expect(deleteSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(deleteSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -274,6 +286,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -284,10 +299,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.patch<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.patch<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -300,7 +315,10 @@ describe('Fetching Tests', () => {
         body: expect.stringContaining(JSON.stringify({ id: 1, name: 'foo' })),
       })
     );
-    expect(patchSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(patchSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -311,6 +329,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -321,10 +342,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.head<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.head<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -337,7 +358,10 @@ describe('Fetching Tests', () => {
         body: expect.stringContaining(JSON.stringify({ id: 1, name: 'foo' })),
       })
     );
-    expect(headSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(headSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
@@ -348,6 +372,9 @@ describe('Fetching Tests', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
+      headers: new Headers({
+        'content-type': 'application/json; charset=utf-8',
+      }),
       json: async () => Promise.resolve(fetchResponse),
     });
 
@@ -358,10 +385,10 @@ describe('Fetching Tests', () => {
       body: JSON.stringify({ id: 1, name: 'foo' }),
     };
 
-    const { success, data, error } = await request.options<Test>(
-      'https://api.example.com/data',
-      options
-    );
+    const { success, data, error } = await request.options<Test>({
+      url: 'https://api.example.com/data',
+      options,
+    });
 
     const config = mockFetch.mock.calls[0][1];
 
@@ -374,9 +401,73 @@ describe('Fetching Tests', () => {
         body: expect.stringContaining(JSON.stringify({ id: 1, name: 'foo' })),
       })
     );
-    expect(optionsSpy).toHaveBeenCalledWith('https://api.example.com/data', options);
+    expect(optionsSpy).toHaveBeenCalledWith({
+      url: 'https://api.example.com/data',
+      options,
+    });
     expect(success).toEqual(true);
     expect(data).toEqual(fetchResponse);
     expect(error).toBeNull();
+  });
+
+  it('should correctly detect when it is plain text', async () => {
+    const fetchResponse = 'plain text';
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      headers: new Headers({
+        'content-type': 'charset=utf-8',
+      }),
+      text: async () => Promise.resolve(fetchResponse),
+    });
+
+    const { success, data, error } = await request.get<string>({
+      url: 'https://api.example.com/data',
+    });
+
+    expect(success).toBe(true);
+    expect(data).toEqual('plain text');
+    expect(error).toBeNull();
+  });
+
+  it('should correctly abort the request', async () => {
+    vi.useFakeTimers();
+
+    const expectError = {
+      message: 'Request was aborted by the client',
+      name: 'AbortError',
+      statusCode: undefined,
+    };
+
+    mockFetch.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve({
+              ok: true,
+              status: 200,
+              headers: new Headers({
+                'content-type': 'charset=utf-8',
+              }),
+              text: async () => Promise.resolve(null),
+            });
+          }, 5000);
+        })
+    );
+
+    const requestPromise = request.get<string>({
+      url: 'https://api.example.com/data',
+      timeout: 1000,
+    });
+
+    vi.advanceTimersByTime(5000);
+
+    const { success, data, error } = await requestPromise;
+
+    expect(success).toBe(false);
+    expect(data).toBeNull();
+    expect(error).toEqual(expectError);
+
+    vi.useRealTimers();
   });
 });
