@@ -1,6 +1,6 @@
 {
   "name": "http-sentinel",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "💥A TypeScript library that provides a comprehensive set of HTTP error classes and utilities for handling HTTP errors in your applications.",
   "exports": {
     ".": {
